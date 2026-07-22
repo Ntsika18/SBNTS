@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AmberWear — Ember Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FAF3E7;
+      --cream-mid: #F2E6CE;
+      --cream-deep: #E8D5B5;
+      --burnt: #C14F00;
+      --burnt-light: #D96A1A;
+      --burnt-dark: #8B3300;
+      --burnt-muted: #E8966A;
+      --charcoal: #2A1F14;
+      --warm-gray: #8A7968;
+      --white: #ffffff;
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Jost', sans-serif;
+      --trans: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--white); color: var(--charcoal); font-family: var(--font-body); font-weight: 300; line-height: 1.7; }
+
+    nav {
+      position: sticky; top: 0; z-index: 900;
+      background: var(--cream); border-bottom: 1px solid var(--cream-deep);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem; height: 72px;
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-size: 1.2rem; font-weight: 500;
+      color: var(--burnt-dark); letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+    }
+    .nav-logo span { font-weight: 300; font-style: italic; color: var(--burnt-light); font-size: 1rem; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links li a {
+      font-family: var(--font-body); font-size: 0.75rem; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--charcoal);
+      text-decoration: none; transition: var(--trans); opacity: 0.7;
+    }
+    .nav-links li a:hover, .nav-links li a.active { opacity: 1; color: var(--burnt); }
+    .nav-actions { display: flex; align-items: center; gap: 1.2rem; }
+    .btn-icon {
+      background: none; border: none; cursor: pointer; color: var(--charcoal);
+      opacity: 0.7; transition: var(--trans); display: flex; align-items: center; gap: 0.35rem;
+      font-family: var(--font-body); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .btn-icon:hover { opacity: 1; color: var(--burnt); }
+    .btn-pill {
+      background: var(--burnt); color: var(--white); border: none;
+      padding: 0.55rem 1.4rem; border-radius: 60px; font-family: var(--font-body);
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+      cursor: pointer; transition: var(--trans);
+    }
+    .btn-pill:hover { background: var(--burnt-dark); }
+    .btn-pill.outline { background: transparent; color: var(--burnt); border: 1px solid var(--burnt); }
+    .btn-pill.outline:hover { background: var(--burnt); color: var(--white); }
+    .cart-badge {
+      background: var(--burnt); color: white; font-size: 0.6rem; font-weight: 600;
+      width: 16px; height: 16px; border-radius: 50%; display: inline-flex;
+      align-items: center; justify-content: center; margin-left: 2px; vertical-align: top;
+    }
+    .user-chip { display: flex; align-items: center; gap: 0.6rem; background: var(--cream-mid); border-radius: 60px; padding: 0.3rem 0.9rem 0.3rem 0.5rem; }
+    .user-chip-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--burnt); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 600; }
+    .user-chip span { font-size: 0.72rem; font-weight: 500; color: var(--burnt-dark); }
+    .user-chip button { background: none; border: none; font-size: 0.65rem; color: var(--warm-gray); cursor: pointer; text-decoration: underline; font-family: var(--font-body); }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* HERO */
+    .hero { min-height: 88vh; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; }
+    .hero-left { display: flex; flex-direction: column; justify-content: center; padding: 5rem 4rem 5rem 5rem; }
+    .hero-eyebrow { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--burnt-light); margin-bottom: 1.5rem; }
+    .hero-headline { font-family: var(--font-display); font-size: clamp(3rem, 5vw, 5.5rem); font-weight: 300; line-height: 1.05; color: var(--charcoal); margin-bottom: 1.8rem; }
+    .hero-headline em { font-style: italic; color: var(--burnt); }
+    .hero-sub { font-size: 0.95rem; color: var(--warm-gray); max-width: 380px; margin-bottom: 2.5rem; font-weight: 300; }
+    .hero-cta { display: flex; gap: 1rem; align-items: center; }
+    .btn-large { background: var(--burnt); color: var(--white); border: none; padding: 0.9rem 2.5rem; border-radius: 60px; font-family: var(--font-body); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: var(--trans); }
+    .btn-large:hover { background: var(--burnt-dark); }
+    .btn-large.ghost { background: transparent; color: var(--charcoal); border: 1px solid var(--cream-deep); }
+    .btn-large.ghost:hover { border-color: var(--burnt); color: var(--burnt); }
+    .hero-right { background: var(--cream-mid); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .hero-right::before { content: ''; position: absolute; width: 420px; height: 420px; border-radius: 50%; background: var(--cream-deep); top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .hero-right::after { content: ''; position: absolute; width: 320px; height: 320px; border-radius: 50%; border: 1px solid var(--burnt-muted); top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.4; }
+    .hero-garment { position: relative; z-index: 2; font-size: 8rem; animation: float 4s ease-in-out infinite; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    .hero-tag { position: absolute; bottom: 2.5rem; right: 2.5rem; background: var(--cream-mid); border-radius: 16px; padding: 1rem 1.3rem; z-index: 3; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+    .hero-tag p { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-gray); margin-bottom: 0.2rem; }
+    .hero-tag strong { font-family: var(--font-display); font-size: 1.4rem; font-weight: 500; color: var(--burnt); }
+
+    /* MARQUEE */
+    .marquee-strip { background: var(--burnt); color: var(--cream); padding: 0.65rem 0; overflow: hidden; white-space: nowrap; }
+    .marquee-inner { display: inline-flex; gap: 3rem; animation: ticker 18s linear infinite; }
+    .marquee-inner span { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; }
+    .marquee-inner span.dot { opacity: 0.5; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* SECTIONS */
+    .section { padding: 5rem; }
+    .section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem; }
+    .section-title { font-family: var(--font-display); font-size: clamp(2rem, 3vw, 3.2rem); font-weight: 400; line-height: 1.1; color: var(--charcoal); }
+    .section-title em { font-style: italic; color: var(--burnt); }
+
+    /* PRODUCT GRID */
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 2.5rem 2rem; }
+    .product-card { cursor: pointer; }
+    .product-card-img { background: var(--cream-mid); border-radius: 20px; aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; transition: var(--trans); margin-bottom: 1rem; }
+    .product-card:hover .product-card-img { background: var(--cream-deep); transform: translateY(-4px); }
+    .product-card-badge { position: absolute; top: 1rem; left: 1rem; background: var(--burnt); color: white; font-size: 0.6rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.3rem 0.7rem; border-radius: 60px; }
+    .add-btn { position: absolute; bottom: 1rem; right: 1rem; width: 40px; height: 40px; border-radius: 50%; background: var(--burnt); color: white; border: none; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transform: translateY(6px); transition: var(--trans); }
+    .product-card:hover .add-btn { opacity: 1; transform: translateY(0); }
+    .product-name { font-family: var(--font-display); font-size: 1.1rem; font-weight: 500; color: var(--charcoal); margin-bottom: 0.2rem; }
+    .product-price { font-size: 0.85rem; font-weight: 500; color: var(--burnt); letter-spacing: 0.04em; }
+
+    /* STORY BAND */
+    .story-band { background: var(--charcoal); color: var(--cream); display: grid; grid-template-columns: 1fr 1fr; }
+    .story-left { padding: 5rem; display: flex; flex-direction: column; justify-content: center; }
+    .story-left .eyebrow { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--burnt-muted); margin-bottom: 1.2rem; }
+    .story-left h2 { font-family: var(--font-display); font-size: clamp(2rem, 3vw, 3.5rem); font-weight: 300; line-height: 1.1; margin-bottom: 1.5rem; }
+    .story-left h2 em { font-style: italic; color: var(--burnt-muted); }
+    .story-left p { font-size: 0.9rem; line-height: 1.8; color: rgba(250,243,231,0.7); margin-bottom: 2rem; max-width: 380px; }
+    .story-right { background: var(--burnt-dark); display: flex; align-items: center; justify-content: center; min-height: 380px; position: relative; overflow: hidden; }
+    .story-right::before { content: ''; position: absolute; width: 280px; height: 280px; border-radius: 50%; border: 1px solid rgba(250,243,231,0.15); }
+    .story-right .big-icon { font-size: 7rem; position: relative; z-index: 1; }
+    .story-stats { display: flex; gap: 3rem; margin-top: 0.5rem; }
+    .stat-item p { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(250,243,231,0.5); margin-top: 0.2rem; }
+    .stat-item strong { font-family: var(--font-display); font-size: 2rem; font-weight: 400; color: var(--cream); }
+
+    /* CATALOGUE */
+    .catalogue-header { padding: 4rem 5rem 2rem; border-bottom: 1px solid var(--cream-deep); }
+    .catalogue-header h1 { font-family: var(--font-display); font-size: clamp(2.5rem, 4vw, 4.5rem); font-weight: 300; line-height: 1; }
+    .catalogue-header h1 em { font-style: italic; color: var(--burnt); }
+    .catalogue-header p { font-size: 0.85rem; color: var(--warm-gray); margin-top: 0.8rem; }
+    .catalogue-body { display: grid; grid-template-columns: 220px 1fr; }
+    .catalogue-sidebar { padding: 2.5rem 2rem 2.5rem 5rem; border-right: 1px solid var(--cream-deep); }
+    .sidebar-section { margin-bottom: 2rem; }
+    .sidebar-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--warm-gray); margin-bottom: 0.8rem; }
+    .filter-chip { display: block; width: 100%; text-align: left; background: none; border: none; padding: 0.4rem 0; font-family: var(--font-body); font-size: 0.82rem; font-weight: 300; color: var(--charcoal); cursor: pointer; transition: var(--trans); opacity: 0.7; }
+    .filter-chip:hover, .filter-chip.active { opacity: 1; color: var(--burnt); font-weight: 500; }
+    .catalogue-grid-area { padding: 2.5rem 5rem 5rem 3rem; }
+    .catalogue-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .catalogue-count { font-size: 0.78rem; color: var(--warm-gray); letter-spacing: 0.05em; }
+
+    /* ABOUT */
+    .about-hero { background: var(--charcoal); min-height: 55vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 5rem; position: relative; overflow: hidden; }
+    .about-hero::before { content: ''; position: absolute; width: 500px; height: 500px; border-radius: 50%; border: 1px solid rgba(197,106,44,0.2); top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .about-hero::after { content: ''; position: absolute; width: 350px; height: 350px; border-radius: 50%; border: 1px solid rgba(197,106,44,0.15); top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .about-hero-content { position: relative; z-index: 2; }
+    .about-hero .eyebrow { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--burnt-muted); margin-bottom: 1.5rem; }
+    .about-hero h1 { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 300; line-height: 1.05; color: var(--cream); margin-bottom: 1.5rem; }
+    .about-hero h1 em { font-style: italic; color: var(--burnt-muted); }
+    .about-hero .lead { font-size: 1rem; color: rgba(250,243,231,0.65); max-width: 520px; margin: 0 auto; line-height: 1.8; }
+    .about-values { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--cream-deep); }
+    .value-block { padding: 3.5rem; border-right: 1px solid var(--cream-deep); }
+    .value-block:last-child { border-right: none; }
+    .value-icon { font-size: 2rem; margin-bottom: 1.2rem; }
+    .value-block h3 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 500; margin-bottom: 0.8rem; color: var(--charcoal); }
+    .value-block p { font-size: 0.88rem; color: var(--warm-gray); line-height: 1.8; }
+    .about-story-section { display: grid; grid-template-columns: 1fr 1fr; }
+    .about-story-text { padding: 5rem; display: flex; flex-direction: column; justify-content: center; }
+    .about-story-text .eyebrow { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--burnt-light); margin-bottom: 1.2rem; }
+    .about-story-text h2 { font-family: var(--font-display); font-size: 2.5rem; font-weight: 300; line-height: 1.1; margin-bottom: 1.5rem; }
+    .about-story-text p { font-size: 0.9rem; color: var(--warm-gray); line-height: 1.9; margin-bottom: 1.2rem; }
+    .about-story-visual { background: var(--cream-mid); display: flex; align-items: center; justify-content: center; font-size: 9rem; }
+
+    /* CONTACT */
+    .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; min-height: 80vh; }
+    .contact-left { background: var(--burnt-dark); padding: 5rem; display: flex; flex-direction: column; justify-content: space-between; }
+    .contact-left .eyebrow { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--burnt-muted); margin-bottom: 1.2rem; }
+    .contact-left h1 { font-family: var(--font-display); font-size: clamp(2rem, 3vw, 3.5rem); font-weight: 300; color: var(--cream); line-height: 1.1; margin-bottom: 1.5rem; }
+    .contact-left h1 em { font-style: italic; color: var(--burnt-muted); }
+    .contact-left > div > p { font-size: 0.88rem; color: rgba(250,243,231,0.6); line-height: 1.8; }
+    .contact-info-items { margin-top: 3rem; }
+    .contact-info-item { display: flex; gap: 1rem; margin-bottom: 2rem; align-items: flex-start; }
+    .contact-info-icon { width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(250,243,231,0.2); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    .contact-info-item h4 { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--burnt-muted); margin-bottom: 0.3rem; }
+    .contact-info-item p { font-size: 0.85rem; color: rgba(250,243,231,0.7); }
+    .contact-right { background: var(--white); padding: 5rem; display: flex; flex-direction: column; justify-content: center; }
+    .contact-right h2 { font-family: var(--font-display); font-size: 2rem; font-weight: 400; color: var(--charcoal); margin-bottom: 2rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-gray); margin-bottom: 0.5rem; }
+    .form-input { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--cream-deep); border-radius: 8px; background: var(--cream); font-family: var(--font-body); font-size: 0.88rem; color: var(--charcoal); transition: var(--trans); outline: none; }
+    .form-input:focus { border-color: var(--burnt); background: var(--white); }
+    textarea.form-input { resize: vertical; min-height: 120px; }
+
+    /* CART DRAWER */
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(42,31,20,0.4); backdrop-filter: blur(4px); z-index: 1000; visibility: hidden; opacity: 0; transition: var(--trans); }
+    .drawer-overlay.open { visibility: visible; opacity: 1; }
+    .cart-drawer { position: fixed; top: 0; right: 0; width: 400px; max-width: 95vw; height: 100vh; background: var(--white); z-index: 1001; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); box-shadow: -12px 0 40px rgba(0,0,0,0.1); }
+    .cart-drawer.open { transform: translateX(0); }
+    .drawer-head { padding: 1.5rem 1.8rem; border-bottom: 1px solid var(--cream-deep); display: flex; justify-content: space-between; align-items: center; }
+    .drawer-head h3 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 500; color: var(--charcoal); }
+    .drawer-close { background: var(--cream-mid); border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; color: var(--charcoal); transition: var(--trans); }
+    .drawer-close:hover { background: var(--cream-deep); }
+    .drawer-items { flex: 1; overflow-y: auto; padding: 1.5rem 1.8rem; }
+    .cart-empty { text-align: center; padding: 3rem 0; color: var(--warm-gray); }
+    .cart-empty .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+    .cart-empty p { font-size: 0.85rem; }
+    .cart-line { display: flex; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--cream-deep); align-items: center; }
+    .cart-line-img { width: 56px; height: 56px; border-radius: 10px; background: var(--cream-mid); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0; }
+    .cart-line-info { flex: 1; }
+    .cart-line-info strong { font-family: var(--font-display); font-size: 1rem; font-weight: 500; color: var(--charcoal); display: block; }
+    .cart-line-info span { font-size: 0.8rem; color: var(--warm-gray); }
+    .cart-line-right { text-align: right; }
+    .cart-line-price { font-weight: 500; color: var(--burnt); font-size: 0.9rem; }
+    .cart-line-remove { background: none; border: none; cursor: pointer; font-size: 0.7rem; color: var(--warm-gray); text-decoration: underline; display: block; margin-top: 0.3rem; font-family: var(--font-body); }
+    .drawer-footer { padding: 1.5rem 1.8rem; border-top: 1px solid var(--cream-deep); }
+    .cart-subtotal { display: flex; justify-content: space-between; margin-bottom: 1.2rem; align-items: baseline; }
+    .cart-subtotal span { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-gray); }
+    .cart-subtotal strong { font-family: var(--font-display); font-size: 1.5rem; font-weight: 500; color: var(--charcoal); }
+    .btn-checkout { width: 100%; background: var(--burnt); color: white; border: none; padding: 1rem; border-radius: 60px; font-family: var(--font-body); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: var(--trans); }
+    .btn-checkout:hover { background: var(--burnt-dark); }
+
+    /* LOGIN MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(42,31,20,0.6); backdrop-filter: blur(6px); z-index: 1100; display: flex; align-items: center; justify-content: center; visibility: hidden; opacity: 0; transition: var(--trans); }
+    .modal-overlay.open { visibility: visible; opacity: 1; }
+    .modal-card { background: var(--white); border-radius: 24px; padding: 2.5rem; width: 380px; max-width: 92vw; box-shadow: 0 24px 60px rgba(0,0,0,0.15); }
+    .modal-card h2 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 400; color: var(--charcoal); margin-bottom: 0.4rem; }
+    .modal-card p.sub { font-size: 0.8rem; color: var(--warm-gray); margin-bottom: 1.8rem; }
+    .role-toggle { display: flex; background: var(--cream-mid); border-radius: 60px; padding: 3px; margin-bottom: 1.5rem; }
+    .role-toggle label { flex: 1; text-align: center; padding: 0.5rem; border-radius: 60px; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; cursor: pointer; transition: var(--trans); color: var(--warm-gray); }
+    .role-toggle input { display: none; }
+    .role-toggle label:has(input:checked) { background: var(--white); color: var(--burnt-dark); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .modal-input { width: 100%; padding: 0.8rem 1.1rem; border: 1px solid var(--cream-deep); border-radius: 10px; background: var(--cream); font-family: var(--font-body); font-size: 0.88rem; color: var(--charcoal); margin-bottom: 0.8rem; outline: none; transition: var(--trans); }
+    .modal-input:focus { border-color: var(--burnt); background: var(--white); }
+    .login-error { color: #c14f00; font-size: 0.75rem; margin-bottom: 0.8rem; }
+    .modal-actions { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 0.5rem; }
+    .btn-cancel { background: none; border: none; font-size: 0.78rem; color: var(--warm-gray); cursor: pointer; text-align: center; font-family: var(--font-body); }
+
+    /* ADMIN */
+    .admin-modal-card { background: var(--white); border-radius: 24px; padding: 2.5rem; width: 540px; max-width: 92vw; max-height: 80vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,0.15); }
+    .admin-modal-card h2 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 400; margin-bottom: 1.5rem; color: var(--charcoal); }
+    .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 1rem; background: var(--cream); border-radius: 10px; margin-bottom: 0.6rem; }
+    .admin-item span { font-size: 0.85rem; }
+    .btn-delete { background: #c0392b; color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 60px; font-size: 0.7rem; cursor: pointer; font-family: var(--font-body); }
+    .admin-form-row { display: grid; grid-template-columns: 1fr auto auto; gap: 0.7rem; margin-top: 1.5rem; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--charcoal); color: var(--cream); padding: 0.75rem 1.5rem; border-radius: 60px; font-size: 0.8rem; font-weight: 400; letter-spacing: 0.06em; z-index: 9999; opacity: 0; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* FOOTER */
+    footer { background: var(--charcoal); color: var(--cream); padding: 3rem 5rem; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; border-top: 1px solid rgba(250,243,231,0.1); }
+    .footer-logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; color: var(--cream); letter-spacing: 0.08em; text-transform: uppercase; }
+    footer p { font-size: 0.8rem; color: rgba(250,243,231,0.5); margin-top: 0.6rem; line-height: 1.8; }
+    footer h4 { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--burnt-muted); margin-bottom: 1rem; }
+    footer ul { list-style: none; }
+    footer ul li { font-size: 0.82rem; color: rgba(250,243,231,0.5); margin-bottom: 0.5rem; cursor: pointer; transition: var(--trans); }
+    footer ul li:hover { color: var(--cream); }
+    .footer-bottom { background: var(--charcoal); border-top: 1px solid rgba(250,243,231,0.08); padding: 1.2rem 5rem; font-size: 0.72rem; color: rgba(250,243,231,0.3); letter-spacing: 0.06em; display: flex; justify-content: space-between; }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 1.5rem; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-right { min-height: 320px; }
+      .hero-left { padding: 3rem 2rem; }
+      .section { padding: 3rem 2rem; }
+      .story-band, .about-story-section, .contact-wrap { grid-template-columns: 1fr; }
+      .about-values { grid-template-columns: 1fr; }
+      .about-story-visual { min-height: 240px; }
+      .catalogue-body { grid-template-columns: 1fr; }
+      .catalogue-sidebar { padding: 2rem 2rem 0; border-right: none; border-bottom: 1px solid var(--cream-deep); }
+      .catalogue-grid-area { padding: 2rem; }
+      .catalogue-header { padding: 3rem 2rem 1.5rem; }
+      footer { grid-template-columns: 1fr; padding: 2rem; }
+      .footer-bottom { padding: 1rem 2rem; flex-direction: column; gap: 0.4rem; }
+      .story-left { padding: 3rem 2rem; }
+      .contact-left, .contact-right, .about-story-text { padding: 3rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="navigate('home')"><img src="Banner-removebg-preview.png" width="100" height="50" alt="SBNTS"> <span>/ ember collection</span></div>
+  <ul class="nav-links">
+    <li><a href="#" onclick="navigate('home');return false;" id="nav-home" class="active">Home</a></li>
+    <li><a href="#" onclick="navigate('catalogue');return false;" id="nav-catalogue">Catalogue</a></li>
+    <li><a href="#" onclick="navigate('about');return false;" id="nav-about">About</a></li>
+    <li><a href="#" onclick="navigate('contact');return false;" id="nav-contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <div id="authArea"><button class="btn-pill" onclick="openLoginModal()">Sign In</button></div>
+    <button class="btn-icon" onclick="openCart()">🛒 <span id="cartCount" class="cart-badge">0</span></button>
+    <button id="adminNavBtn" style="display:none;" class="btn-pill outline" onclick="openAdminModal()">Admin</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">✦ New Season — Ember Collection 2025</p>
+      <h1 class="hero-headline">Wear the <em>warmth</em> of earth</h1>
+      <p class="hero-sub">Handcrafted pieces in cream and burnt orange. Ethically made, endlessly wearable — designed for those who dress with intention.</p>
+      <div class="hero-cta">
+        <button class="btn-large" onclick="navigate('catalogue')">Shop Collection</button>
+        <button class="btn-large ghost" onclick="navigate('about')">Our Story</button>
+      </div>
+    </div>
+    
+      <div><img src="Free Minimalist Dictionary Definition Funny Quote Summer Sun Instagram Post.jpeg" alt="Seasonal Drop"></div>
+      <div class="hero-tag"><p>Starting from</p><strong>$29</strong></div>
+
+  </section>
+  <div class="marquee-strip"><div class="marquee-inner" id="marqueeInner"></div></div>
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title">Signature <em>Drops</em></h2>
+      <button class="btn-pill outline" onclick="navigate('catalogue')">View all →</button>
+    </div>
+    <div class="product-grid" id="homeGrid"></div>
+  </section>
+  <div class="story-band">
+    <div class="story-left">
+      <div>
+        <p class="eyebrow">✦ Made with care</p>
+        <h2>Ethically crafted, <em>timeless</em> by design</h2>
+        <p>Every piece is made from sustainably sourced fabrics, produced in small batches by artisan partners. We believe fashion can be both beautiful and responsible.</p>
+        <button class="btn-large" style="background:var(--burnt-muted);color:var(--charcoal);border:none;" onclick="navigate('about')">Learn More</button>
+      </div>
+      <div class="story-stats">
+        <div class="stat-item"><strong>100%</strong><p>Natural fibres</p></div>
+        <div class="stat-item"><strong>12+</strong><p>Artisan partners</p></div>
+        <div class="stat-item"><strong>0</strong><p>Waste policy</p></div>
+      </div>
+    </div>
+    <div class="story-right"><div class="big-icon">🌿</div></div>
+  </div>
+</div>
+
+<!-- CATALOGUE -->
+<div id="page-catalogue" class="page">
+  <div class="catalogue-header">
+    <h1>Ember <em>Collection</em></h1>
+    <p>All pieces — handcrafted in earthy warmth</p>
+  </div>
+  <div class="catalogue-body">
+    <div class="catalogue-sidebar">
+      <div class="sidebar-section">
+        <p class="sidebar-label">Category</p>
+        <button class="filter-chip active" onclick="filterCat(this,'all')">All Items</button>
+        <button class="filter-chip" onclick="filterCat(this,'tops')">Tops</button>
+        <button class="filter-chip" onclick="filterCat(this,'bottoms')">Bottoms</button>
+        <button class="filter-chip" onclick="filterCat(this,'outerwear')">Outerwear</button>
+        <button class="filter-chip" onclick="filterCat(this,'accessories')">Accessories</button>
+      </div>
+      <div class="sidebar-section">
+        <p class="sidebar-label">Sort By</p>
+        <button class="filter-chip active" onclick="sortProd(this,'default')">Featured</button>
+        <button class="filter-chip" onclick="sortProd(this,'asc')">Price: Low → High</button>
+        <button class="filter-chip" onclick="sortProd(this,'desc')">Price: High → Low</button>
+      </div>
+    </div>
+    <div class="catalogue-grid-area">
+      <div class="catalogue-toolbar">
+        <p class="catalogue-count" id="catalogueCount">Showing all items</p>
+      </div>
+      <div class="product-grid" id="catalogueGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="page-about" class="page">
+  <div class="about-hero">
+    <div class="about-hero-content">
+      <p class="eyebrow">✦ Our Story</p>
+      <h1>Rooted in <em>craft</em>,<br>worn with soul</h1>
+      <p class="lead">AmberWear was born from a simple belief: clothing should feel as good as it looks, and come from hands that care.</p>
+    </div>
+  </div>
+  <div class="about-values">
+    <div class="value-block"><div class="value-icon">🌱</div><h3>Sustainable</h3><p>We source only natural, responsibly grown fibres. Every fabric is certified, every supplier audited — because the earth deserves as much care as our customers.</p></div>
+    <div class="value-block"><div class="value-icon">🤝</div><h3>Handcrafted</h3><p>Our pieces are made in small batches by artisan partners across three continents. Slow fashion, not fast — each garment takes time because quality demands it.</p></div>
+    <div class="value-block"><div class="value-icon">♾️</div><h3>Timeless</h3><p>We design against trends. The Ember palette — cream and burnt orange — is a commitment to enduring warmth over seasonal noise. Buy less, wear forever.</p></div>
+  </div>
+  <div class="about-story-section">
+    <div class="about-story-text">
+      <p class="eyebrow">✦ How we started</p>
+      <h2>A founder's obsession with natural colour</h2>
+      <p>AmberWear began in 2019 in a small studio in Cape Town. Our founder, after years working in fast fashion, walked away from synthetic dyes and disposable trends to build something different.</p>
+      <p>The burnt orange palette came from the Karoo landscape — that warm, earthy glow at dusk. The cream came from unbleached cotton, left as nature made it. Together, they became our signature.</p>
+      <p>Today we ship worldwide and work with over a dozen artisan studios, but the philosophy hasn't changed: make beautiful things that last.</p>
+    </div>
+    <div class="about-story-visual">🏔️</div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="page-contact" class="page">
+  <div class="contact-wrap">
+    <div class="contact-left">
+      <div>
+        <p class="eyebrow">✦ Reach Out</p>
+        <h1>Let's <em>talk</em></h1>
+        <p>Questions about sizing, orders, wholesale, or just want to say hello? We'd love to hear from you. Our team typically responds within 24 hours.</p>
+        <div class="contact-info-items">
+          <div class="contact-info-item"><div class="contact-info-icon">📍</div><div><h4>Studio</h4><p>12 Amber Lane, Cape Town<br>South Africa, 8001</p></div></div>
+          <div class="contact-info-item"><div class="contact-info-icon">✉️</div><div><h4>Email</h4><p>hello@amberwear.co</p></div></div>
+          <div class="contact-info-item"><div class="contact-info-icon">📞</div><div><h4>Phone</h4><p>+27 21 555 0192</p></div></div>
+        </div>
+      </div>
+      <p style="font-size:0.75rem;opacity:0.35;letter-spacing:0.1em;">Mon – Fri, 9am – 5pm SAST</p>
+    </div>
+    <div class="contact-right">
+      <h2>Send us a message</h2>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input class="form-input" type="text" placeholder="Sara"></div>
+        <div class="form-group"><label>Last Name</label><input class="form-input" type="text" placeholder="Nkosi"></div>
+      </div>
+      <div class="form-group"><label>Email</label><input class="form-input" type="email" placeholder="sara@example.com"></div>
+      <div class="form-group"><label>Subject</label><input class="form-input" type="text" placeholder="Order enquiry, sizing help..."></div>
+      <div class="form-group"><label>Message</label><textarea class="form-input" placeholder="Tell us how we can help…"></textarea></div>
+      <button class="btn-large" onclick="handleContactSubmit()">Send Message</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">AMBERWEAR</div>
+    <p>Ethically made, endlessly wearable.<br>Rooted in the warmth of the earth.</p>
+  </div>
+  <div>
+    <h4>Quick Links</h4>
+    <ul>
+      <li onclick="navigate('home')">Home</li>
+      <li onclick="navigate('catalogue')">Catalogue</li>
+      <li onclick="navigate('about')">About Us</li>
+      <li onclick="navigate('contact')">Contact</li>
+    </ul>
+  </div>
+  <div>
+    <h4>Support</h4>
+    <ul>
+      <li>Sizing Guide</li>
+      <li>Shipping & Returns</li>
+      <li>Care Instructions</li>
+      <li>Wholesale Enquiries</li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2025 AmberWear. All rights reserved.</span>
+  <span>Designed with care · Ethically made</span>
+</div>
+
+<!-- CART DRAWER -->
+<div id="cartOverlay" class="drawer-overlay" onclick="closeCart()"></div>
+<div id="cartDrawer" class="cart-drawer">
+  <div class="drawer-head">
+    <h3>Your Cart</h3>
+    <button class="drawer-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="drawer-items" id="cartItems"></div>
+  <div class="drawer-footer">
+    <div class="cart-subtotal">
+      <span>Subtotal</span>
+      <strong id="cartTotal">$0.00</strong>
+    </div>
+    <button class="btn-checkout" onclick="handleCheckout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal-overlay" onclick="handleModalBackdrop(event,'loginModal')">
+  <div class="modal-card">
+    <h2>Welcome Back</h2>
+    <p class="sub">Sign in to your AmberWear account</p>
+    <div class="role-toggle">
+      <label><input type="radio" name="role" value="customer" checked>Customer</label>
+      <label><input type="radio" name="role" value="admin">Admin</label>
+    </div>
+    <input class="modal-input" type="text" id="loginUser" placeholder="Username">
+    <input class="modal-input" type="password" id="loginPass" placeholder="Password">
+    <p class="login-error" id="loginErr"></p>
+    <div class="modal-actions">
+      <button class="btn-large" style="width:100%;" onclick="doLogin()">Sign In</button>
+      <button class="btn-cancel" onclick="closeLoginModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div id="adminModal" class="modal-overlay" onclick="handleModalBackdrop(event,'adminModal')">
+  <div class="admin-modal-card">
+    <h2>Inventory Management</h2>
+    <div id="adminList"></div>
+    <div class="admin-form-row">
+      <input class="form-input" type="text" id="newName" placeholder="Product name">
+      <input class="form-input" type="number" id="newPrice" placeholder="$" style="width:80px;">
+      <button class="btn-large" onclick="addProduct()">Add</button>
+    </div>
+    <div style="margin-top:1.5rem;text-align:right;">
+      <button class="btn-cancel" onclick="closeAdminModal()">Close Panel</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastEl" class="toast"></div>
+
+<script>
+  const INITIAL = [
+    { id:1, name:"Burnt Orange Linen Shirt",  price:59,  icon:"👕", cat:"tops",        badge:"Bestseller" },
+    { id:2, name:"Cream Oversized Knit",       price:89,  icon:"🧥", cat:"outerwear",   badge:"New" },
+    { id:3, name:"Ember Cargo Pants",          price:79,  icon:"👖", cat:"bottoms",     badge:null },
+    { id:4, name:"Clay Wool Beanie",           price:29,  icon:"🧢", cat:"accessories", badge:null },
+    { id:5, name:"Rust Cotton Jacket",         price:119, icon:"🧥", cat:"outerwear",   badge:"New" },
+    { id:6, name:"Suede Mules (Cream)",        price:99,  icon:"👞", cat:"accessories", badge:null },
+  ];
+  let products = JSON.parse(localStorage.getItem('aw_products') || JSON.stringify(INITIAL));
+  let cart     = JSON.parse(localStorage.getItem('aw_cart')     || '[]');
+  let user     = JSON.parse(localStorage.getItem('aw_user')     || 'null');
+  let curCat = 'all', curSort = 'default';
+
+  function save() {
+    localStorage.setItem('aw_products', JSON.stringify(products));
+    localStorage.setItem('aw_cart', JSON.stringify(cart));
+    localStorage.setItem('aw_user', JSON.stringify(user));
+  }
+
+  function navigate(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    const navEl = document.getElementById('nav-' + page);
+    if (navEl) navEl.classList.add('active');
+    if (page === 'home') renderHome();
+    if (page === 'catalogue') renderCatalogue();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function buildMarquee() {
+    const items = ['Free shipping on orders over $80','✦','Ethically made','✦','New Ember Collection 2025','✦','Sustainably sourced fibres','✦','Ships worldwide','✦'];
+    const doubled = [...items,...items];
+    document.getElementById('marqueeInner').innerHTML = doubled.map(t => `<span class="${t==='✦'?'dot':''}">${t}</span>`).join('');
+  }
+
+  function esc(s) { return String(s).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+
+  function productCard(prod) {
+    return `<div class="product-card">
+      <div class="product-card-img">
+        ${prod.badge ? `<span class="product-card-badge">${prod.badge}</span>` : ''}
+        <span style="font-size:4.5rem;">${prod.icon}</span>
+        <button class="add-btn" onclick="addToCart(${prod.id})">+</button>
+      </div>
+      <div class="product-name">${esc(prod.name)}</div>
+      <div class="product-price">$${prod.price}</div>
+    </div>`;
+  }
+
+  function renderHome() {
+    document.getElementById('homeGrid').innerHTML = products.slice(0,4).map(productCard).join('');
+  }
+
+  function renderCatalogue() {
+    let list = [...products];
+    if (curCat !== 'all') list = list.filter(p => p.cat === curCat);
+    if (curSort === 'asc') list.sort((a,b) => a.price - b.price);
+    if (curSort === 'desc') list.sort((a,b) => b.price - a.price);
+    const grid = document.getElementById('catalogueGrid');
+    grid.innerHTML = list.length ? list.map(productCard).join('') : '<p style="color:var(--warm-gray);padding:2rem 0;">No items found.</p>';
+    document.getElementById('catalogueCount').textContent = `Showing ${list.length} item${list.length !== 1 ? 's' : ''}`;
+  }
+
+  function filterCat(btn, cat) {
+    curCat = cat;
+    const chips = ['All Items','Tops','Bottoms','Outerwear','Accessories'];
+    document.querySelectorAll('.catalogue-sidebar .filter-chip').forEach(b => {
+      if (chips.includes(b.textContent.trim())) b.classList.toggle('active', b === btn);
+    });
+    renderCatalogue();
+  }
+
+  function sortProd(btn, sort) {
+    curSort = sort;
+    const chips = ['Featured','Price: Low → High','Price: High → Low'];
+    document.querySelectorAll('.catalogue-sidebar .filter-chip').forEach(b => {
+      if (chips.includes(b.textContent.trim())) b.classList.toggle('active', b === btn);
+    });
+    renderCatalogue();
+  }
+
+  function addToCart(id) {
+    const prod = products.find(p => p.id === id);
+    if (!prod) return;
+    const ex = cart.find(i => i.id === id);
+    if (ex) ex.qty++; else cart.push({ id, name: prod.name, price: prod.price, icon: prod.icon, qty: 1 });
+    save(); updateCartBadge(); toast(`Added — ${prod.name}`);
+  }
+
+  function updateCartBadge() {
+    document.getElementById('cartCount').textContent = cart.reduce((s,i) => s + i.qty, 0);
+  }
+
+  function openCart() { renderCart(); document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartDrawer').classList.add('open'); }
+  function closeCart() { document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartDrawer').classList.remove('open'); }
+
+  function renderCart() {
+    const el = document.getElementById('cartItems');
+    if (!cart.length) {
+      el.innerHTML = '<div class="cart-empty"><div class="empty-icon">🛒</div><p>Your cart is empty.<br>Add some warmth.</p></div>';
+      document.getElementById('cartTotal').textContent = '$0.00'; return;
+    }
+    let total = 0;
+    el.innerHTML = cart.map((item, idx) => { total += item.price * item.qty; return `
+      <div class="cart-line">
+        <div class="cart-line-img">${item.icon}</div>
+        <div class="cart-line-info"><strong>${esc(item.name)}</strong><span>Qty ${item.qty} × $${item.price}</span></div>
+        <div class="cart-line-right">
+          <div class="cart-line-price">$${item.price * item.qty}</div>
+          <button class="cart-line-remove" onclick="removeFromCart(${idx})">Remove</button>
+        </div>
+      </div>`; }).join('');
+    document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`;
+  }
+
+  function removeFromCart(idx) { cart.splice(idx,1); save(); updateCartBadge(); renderCart(); }
+
+  function handleCheckout() {
+    if (!cart.length) { toast('Your cart is empty'); return; }
+    if (!user) { closeCart(); openLoginModal(); toast('Please sign in to checkout'); return; }
+    const total = cart.reduce((s,i) => s + i.price * i.qty, 0).toFixed(2);
+    cart = []; save(); updateCartBadge(); closeCart();
+    toast(`Order placed! Total: $${total} — Thank you 🎉`);
+  }
+
+  function openLoginModal() { document.getElementById('loginModal').classList.add('open'); }
+  function closeLoginModal() { document.getElementById('loginModal').classList.remove('open'); document.getElementById('loginErr').textContent = ''; }
+
+  function doLogin() {
+    const username = document.getElementById('loginUser').value.trim();
+    const role = document.querySelector('input[name="role"]:checked').value;
+    if (!username) { document.getElementById('loginErr').textContent = 'Please enter a username.'; return; }
+    if (role === 'admin' && !username.toLowerCase().includes('admin')) { document.getElementById('loginErr').textContent = "Admin username must contain 'admin'."; return; }
+    user = { username, role }; save(); closeLoginModal(); updateAuthUI(); toast(`Welcome, ${username}!`);
+  }
+
+  function logout() { user = null; save(); updateAuthUI(); document.getElementById('adminModal').classList.remove('open'); toast('Signed out'); }
+
+  function updateAuthUI() {
+    const area = document.getElementById('authArea');
+    const adminBtn = document.getElementById('adminNavBtn');
+    if (user) {
+      area.innerHTML = `<div class="user-chip"><div class="user-chip-avatar">${user.username.slice(0,2).toUpperCase()}</div><span>${user.username}</span><button onclick="logout()">Sign out</button></div>`;
+      adminBtn.style.display = user.role === 'admin' ? 'inline-flex' : 'none';
+    } else {
+      area.innerHTML = `<button class="btn-pill" onclick="openLoginModal()">Sign In</button>`;
+      adminBtn.style.display = 'none';
+    }
+  }
+
+  function openAdminModal() {
+    if (!user || user.role !== 'admin') { toast('Admin access only'); return; }
+    renderAdminList(); document.getElementById('adminModal').classList.add('open');
+  }
+  function closeAdminModal() { document.getElementById('adminModal').classList.remove('open'); }
+
+  function renderAdminList() {
+    document.getElementById('adminList').innerHTML = products.map(p => `
+      <div class="admin-item"><span>${p.icon} <strong>${esc(p.name)}</strong> — $${p.price}</span><button class="btn-delete" onclick="deleteProduct(${p.id})">Delete</button></div>`).join('');
+  }
+
+  function deleteProduct(id) { products = products.filter(p => p.id !== id); save(); renderAdminList(); renderHome(); renderCatalogue(); toast('Product removed'); }
+
+  function addProduct() {
+    const name = document.getElementById('newName').value.trim();
+    const price = parseFloat(document.getElementById('newPrice').value);
+    if (!name || isNaN(price) || price <= 0) { toast('Enter a valid name and price'); return; }
+    products.push({ id: Date.now(), name, price, icon: '👕', cat: 'tops', badge: 'New' });
+    save(); renderAdminList(); renderHome(); renderCatalogue();
+    document.getElementById('newName').value = ''; document.getElementById('newPrice').value = '';
+    toast(`Added: ${name}`);
+  }
+
+  function handleContactSubmit() { toast("Message sent! We'll be in touch within 24 hours. ✦"); }
+
+  function handleModalBackdrop(e, id) { if (e.target === document.getElementById(id)) document.getElementById(id).classList.remove('open'); }
+
+  function toast(msg) {
+    const el = document.getElementById('toastEl');
+    el.textContent = msg; el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2800);
+  }
+
+  buildMarquee(); renderHome(); renderCatalogue(); updateAuthUI(); updateCartBadge();
+</script>
+</body>
+</html>
