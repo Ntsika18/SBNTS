@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AmberWear — Ember Collection</title>
+  <title>SBNTS||Closet</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -229,6 +229,10 @@
     .modal-input { width: 100%; padding: 0.8rem 1.1rem; border: 1px solid var(--cream-deep); border-radius: 10px; background: var(--cream); font-family: var(--font-body); font-size: 0.88rem; color: var(--charcoal); margin-bottom: 0.8rem; outline: none; transition: var(--trans); }
     .modal-input:focus { border-color: var(--burnt); background: var(--white); }
     .login-error { color: #c14f00; font-size: 0.75rem; margin-bottom: 0.8rem; }
+    .btn-google { width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.6rem; background: var(--white); border: 1px solid var(--cream-deep); border-radius: 10px; padding: 0.75rem 1rem; font-family: var(--font-body); font-size: 0.82rem; font-weight: 500; color: var(--charcoal); cursor: pointer; transition: var(--trans); margin-bottom: 1rem; }
+    .btn-google:hover { border-color: var(--burnt); background: var(--cream); }
+    .login-divider { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; color: var(--warm-gray); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .login-divider::before, .login-divider::after { content: ''; flex: 1; height: 1px; background: var(--cream-deep); }
     .modal-actions { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 0.5rem; }
     .btn-cancel { background: none; border: none; font-size: 0.78rem; color: var(--warm-gray); cursor: pointer; text-align: center; font-family: var(--font-body); }
 
@@ -278,7 +282,7 @@
 <body>
 
 <nav>
-  <div class="nav-logo" onclick="navigate('home')"><img src="Banner-removebg-preview.png" width="100" height="50" alt="SBNTS"> <span>/ ember collection</span></div>
+  <div class="nav-logo" onclick="navigate('home')"><img src="SBNTS/Banner-removebg-preview.png" width="100" height="50" alt="SBNTS"> <span>/ ember collection</span></div>
   <ul class="nav-links">
     <li><a href="#" onclick="navigate('home');return false;" id="nav-home" class="active">Home</a></li>
     <li><a href="#" onclick="navigate('catalogue');return false;" id="nav-catalogue">Catalogue</a></li>
@@ -305,7 +309,7 @@
       </div>
     </div>
     
-      <div><img src="Free Minimalist Dictionary Definition Funny Quote Summer Sun Instagram Post.jpeg" alt="Seasonal Drop"></div>
+      <div><img src="SBNTS/Free Minimalist Dictionary Definition Funny Quote Summer Sun Instagram Post.jpeg" alt="Seasonal Drop"></div>
       <div class="hero-tag"><p>Starting from</p><strong>$29</strong></div>
 
   </section>
@@ -412,12 +416,12 @@
     <div class="contact-right">
       <h2>Send us a message</h2>
       <div class="form-row">
-        <div class="form-group"><label>First Name</label><input class="form-input" type="text" placeholder="Sara"></div>
-        <div class="form-group"><label>Last Name</label><input class="form-input" type="text" placeholder="Nkosi"></div>
+        <div class="form-group"><label>First Name</label><input class="form-input" id="firstName" type="text" placeholder="Sara"></div>
+        <div class="form-group"><label>Last Name</label><input class="form-input" id="lastName" type="text" placeholder="Nkosi"></div>
       </div>
-      <div class="form-group"><label>Email</label><input class="form-input" type="email" placeholder="sara@example.com"></div>
-      <div class="form-group"><label>Subject</label><input class="form-input" type="text" placeholder="Order enquiry, sizing help..."></div>
-      <div class="form-group"><label>Message</label><textarea class="form-input" placeholder="Tell us how we can help…"></textarea></div>
+      <div class="form-group"><label>Email</label><input class="form-input" id="email" type="email" placeholder="sara@example.com"></div>
+      <div class="form-group"><label>Subject</label><input class="form-input" id="subject" type="text" placeholder="Order enquiry, sizing help..."></div>
+      <div class="form-group"><label>Message</label><textarea class="form-input" id="message" placeholder="Tell us how we can help…"></textarea></div>
       <button class="btn-large" onclick="handleContactSubmit()">Send Message</button>
     </div>
   </div>
@@ -475,6 +479,16 @@
   <div class="modal-card">
     <h2>Welcome Back</h2>
     <p class="sub">Sign in to your AmberWear account</p>
+    <button type="button" class="btn-google" onclick="googleLogin()">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+        <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
+        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 6.293C4.672 4.166 6.656 2.58 9 3.58z"/>
+      </svg>
+      Continue with Google
+    </button>
+    <div class="login-divider"><span>or sign in with email</span></div>
     <div class="role-toggle">
       <label><input type="radio" name="role" value="customer" checked>Customer</label>
       <label><input type="radio" name="role" value="admin">Admin</label>
@@ -494,10 +508,22 @@
   <div class="admin-modal-card">
     <h2>Inventory Management</h2>
     <div id="adminList"></div>
-    <div class="admin-form-row">
+    <input type="hidden" id="editingProductId">
+    <div class="admin-form-row" style="grid-template-columns:1fr 100px 130px;">
       <input class="form-input" type="text" id="newName" placeholder="Product name">
       <input class="form-input" type="number" id="newPrice" placeholder="$" style="width:80px;">
-      <button class="btn-large" onclick="addProduct()">Add</button>
+      <select class="form-input" id="newCat" aria-label="Product category">
+        <option value="tops">Tops</option>
+        <option value="bottoms">Bottoms</option>
+        <option value="outerwear">Outerwear</option>
+        <option value="accessories">Accessories</option>
+      </select>
+    </div>
+    <div class="admin-form-row" style="grid-template-columns:1fr 1fr auto auto;">
+      <input class="form-input" type="text" id="newIcon" placeholder="Icon e.g. 👕">
+      <input class="form-input" type="text" id="newBadge" placeholder="Badge (optional)">
+      <button id="adminSaveBtn" class="btn-large" onclick="saveProduct()">Add</button>
+      <button id="adminCancelEdit" class="btn-cancel" style="display:none;" onclick="cancelProductEdit()">Cancel</button>
     </div>
     <div style="margin-top:1.5rem;text-align:right;">
       <button class="btn-cancel" onclick="closeAdminModal()">Close Panel</button>
@@ -507,19 +533,48 @@
 
 <div id="toastEl" class="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
 <script>
-  const INITIAL = [
-    { id:1, name:"Burnt Orange Linen Shirt",  price:59,  icon:"👕", cat:"tops",        badge:"Bestseller" },
-    { id:2, name:"Cream Oversized Knit",       price:89,  icon:"🧥", cat:"outerwear",   badge:"New" },
-    { id:3, name:"Ember Cargo Pants",          price:79,  icon:"👖", cat:"bottoms",     badge:null },
-    { id:4, name:"Clay Wool Beanie",           price:29,  icon:"🧢", cat:"accessories", badge:null },
-    { id:5, name:"Rust Cotton Jacket",         price:119, icon:"🧥", cat:"outerwear",   badge:"New" },
-    { id:6, name:"Suede Mules (Cream)",        price:99,  icon:"👞", cat:"accessories", badge:null },
-  ];
-  let products = JSON.parse(localStorage.getItem('aw_products') || JSON.stringify(INITIAL));
+  const supabaseUrl = "https://mlyafqvjxvhdxtiguakg.supabase.co";
+
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1seWFmcXZqeHZoZHh0aWd1YWtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3NDM3OTksImV4cCI6MjEwMDMxOTc5OX0.zuVUy4GAMIdfriF0zStgdPfbmP4p-ywengPupzQgYso"; // paste your Supabase "anon public" API key here
+
+  const hasSupabaseConfig = supabaseUrl !== "https://mlyafqvjxvhdxtiguakg.supabase.co" && supabaseKey !== "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1seWFmcXZqeHZoZHh0aWd1YWtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3NDM3OTksImV4cCI6MjEwMDMxOTc5OX0.zuVUy4GAMIdfriF0zStgdPfbmP4p-ywengPupzQgYso";
+  const supabaseClient = hasSupabaseConfig && window.supabase
+    ? window.supabase.createClient(supabaseUrl, supabaseKey)
+    : null;
+  let products = JSON.parse(localStorage.getItem('aw_products') || '[]');
+  let user = JSON.parse(localStorage.getItem('aw_user') || 'null');
+
+  if (!products.length) {
+    products = [
+      { id: 1, name: 'Ember Linen Shirt', price: 68, icon: '👕', cat: 'tops', badge: 'New' },
+      { id: 2, name: 'Karoo Wide-Leg Trouser', price: 92, icon: '👖', cat: 'bottoms' },
+      { id: 3, name: 'Dusk Wrap Jacket', price: 128, icon: '🧥', cat: 'outerwear' },
+      { id: 4, name: 'Sunset Canvas Tote', price: 29, icon: '👜', cat: 'accessories' }
+    ];
+  }
+
+  async function loadProducts(){
+  if (supabaseClient) {
+    const {data,error}=await supabaseClient.from("products").select("*");
+    if (!error && data.length) products=data.map(product => ({
+      ...product,
+      cat: product.cat || product.category || 'tops'
+    }));
+  }
+
+  renderHome();
+
+  renderCatalogue();
+
+}
+
   let cart     = JSON.parse(localStorage.getItem('aw_cart')     || '[]');
-  let user     = JSON.parse(localStorage.getItem('aw_user')     || 'null');
   let curCat = 'all', curSort = 'default';
+
+  loadProducts();
 
   function save() {
     localStorage.setItem('aw_products', JSON.stringify(products));
@@ -626,26 +681,106 @@
 
   function removeFromCart(idx) { cart.splice(idx,1); save(); updateCartBadge(); renderCart(); }
 
-  function handleCheckout() {
+  async function handleCheckout() {
     if (!cart.length) { toast('Your cart is empty'); return; }
     if (!user) { closeCart(); openLoginModal(); toast('Please sign in to checkout'); return; }
     const total = cart.reduce((s,i) => s + i.price * i.qty, 0).toFixed(2);
+    if (supabaseClient && user.id && !(await createOrder(total))) return;
     cart = []; save(); updateCartBadge(); closeCart();
     toast(`Order placed! Total: $${total} — Thank you 🎉`);
+  }
+
+  async function googleLogin() {
+    if (!supabaseClient) { toast('Connect Supabase first — see setup guide.'); return; }
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.href }
+    });
+    if (error) toast(error.message);
+    // Google redirects away from the page here; on return, checkUser() (called on load) signs the user in.
   }
 
   function openLoginModal() { document.getElementById('loginModal').classList.add('open'); }
   function closeLoginModal() { document.getElementById('loginModal').classList.remove('open'); document.getElementById('loginErr').textContent = ''; }
 
-  function doLogin() {
-    const username = document.getElementById('loginUser').value.trim();
-    const role = document.querySelector('input[name="role"]:checked').value;
-    if (!username) { document.getElementById('loginErr').textContent = 'Please enter a username.'; return; }
-    if (role === 'admin' && !username.toLowerCase().includes('admin')) { document.getElementById('loginErr').textContent = "Admin username must contain 'admin'."; return; }
-    user = { username, role }; save(); closeLoginModal(); updateAuthUI(); toast(`Welcome, ${username}!`);
-  }
+  async function doLogin(){
+    const email = document.getElementById("loginUser").value.trim();
+    const password = document.getElementById("loginPass").value;
+    if (!email || !password) {
+      document.getElementById('loginErr').textContent = 'Enter your email and password.';
+      return;
+    }
+    if (!supabaseClient) {
+      user = { username: email.split('@')[0], role: 'customer' };
+      save(); updateAuthUI(); closeLoginModal(); toast('Signed in locally');
+      return;
+    }
+    const {data,error}=await supabaseClient.auth.signInWithPassword({ email, password });
+    if(error){ toast(error.message); return; }
+    const selectedRole = document.querySelector('input[name="role"]:checked').value;
+    const { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('username, role')
+      .eq('id', data.user.id)
+      .maybeSingle();
+    if (selectedRole === 'admin' && (!profile || profile.role !== 'admin')) {
+      await supabaseClient.auth.signOut();
+      document.getElementById('loginErr').textContent = 'This account does not have admin access.';
+      return;
+    }
+    user = {
+      id: data.user.id,
+      username: profile?.username || data.user.email.split('@')[0],
+      role: profile?.role || 'customer'
+    };
+    save(); updateAuthUI(); closeLoginModal(); toast("Logged in!");
 
-  function logout() { user = null; save(); updateAuthUI(); document.getElementById('adminModal').classList.remove('open'); toast('Signed out'); }
+}
+
+async function register(){
+
+const email=document.getElementById("loginUser").value;
+
+const password=document.getElementById("loginPass").value;
+
+const username=email.split("@")[0];
+
+const {data,error}=await supabaseClient.auth.signUp({
+
+email,
+
+password
+
+});
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+await supabaseClient.from("profiles").insert({
+
+id:data.user.id,
+
+username,
+
+role:"customer"
+
+});
+
+toast("Account created!");
+
+}
+
+  async function logout(){
+    if (supabaseClient) await supabaseClient.auth.signOut();
+    user = null;
+    save();
+    updateAuthUI();
+  }
 
   function updateAuthUI() {
     const area = document.getElementById('authArea');
@@ -667,22 +802,203 @@
 
   function renderAdminList() {
     document.getElementById('adminList').innerHTML = products.map(p => `
-      <div class="admin-item"><span>${p.icon} <strong>${esc(p.name)}</strong> — $${p.price}</span><button class="btn-delete" onclick="deleteProduct(${p.id})">Delete</button></div>`).join('');
+      <div class="admin-item"><span>${p.icon} <strong>${esc(p.name)}</strong> — $${p.price}</span><span><button class="btn-pill outline" onclick="editProduct(${p.id})">Edit</button> <button class="btn-delete" onclick="deleteProduct(${p.id})">Delete</button></span></div>`).join('');
   }
 
-  function deleteProduct(id) { products = products.filter(p => p.id !== id); save(); renderAdminList(); renderHome(); renderCatalogue(); toast('Product removed'); }
+  function editProduct(id) {
+    const product = products.find(item => item.id === id);
+    if (!product) return;
+    document.getElementById('editingProductId').value = product.id;
+    document.getElementById('newName').value = product.name;
+    document.getElementById('newPrice').value = product.price;
+    document.getElementById('newCat').value = product.cat || 'tops';
+    document.getElementById('newIcon').value = product.icon || '';
+    document.getElementById('newBadge').value = product.badge || '';
+    document.getElementById('adminSaveBtn').textContent = 'Save';
+    document.getElementById('adminCancelEdit').style.display = 'inline-block';
+    document.getElementById('newName').focus();
+  }
 
-  function addProduct() {
+  function cancelProductEdit() {
+    document.getElementById('editingProductId').value = '';
+    document.getElementById('adminSaveBtn').textContent = 'Add';
+    document.getElementById('adminCancelEdit').style.display = 'none';
+    ['newName', 'newPrice', 'newIcon', 'newBadge'].forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('newCat').value = 'tops';
+  }
+
+  async function deleteProduct(id) {
+    if (supabaseClient) {
+      const { error } = await supabaseClient.from("products").delete().eq("id", id);
+      if (error) { toast(error.message); return; }
+    }
+    products = products.filter(product => product.id !== id);
+    save();
+
+    await loadProducts();
+    renderAdminList();
+  }
+
+  async function saveProduct() {
     const name = document.getElementById('newName').value.trim();
     const price = parseFloat(document.getElementById('newPrice').value);
+    const category = document.getElementById('newCat').value;
+    const icon = document.getElementById('newIcon').value.trim() || '👕';
+    const badge = document.getElementById('newBadge').value.trim();
+    const editingId = document.getElementById('editingProductId').value;
     if (!name || isNaN(price) || price <= 0) { toast('Enter a valid name and price'); return; }
-    products.push({ id: Date.now(), name, price, icon: '👕', cat: 'tops', badge: 'New' });
+    const productData = { name, price, icon, cat: category, badge: badge || null };
+    const databaseProduct = { name, price, icon, category, badge: badge || null };
+    if (supabaseClient) {
+      const query = editingId
+        ? supabaseClient.from('products').update(databaseProduct).eq('id', editingId)
+        : supabaseClient.from('products').insert(databaseProduct);
+      const { error } = await query;
+      if (error) { toast(error.message); return; }
+    } else {
+      if (editingId) {
+        const product = products.find(item => String(item.id) === editingId);
+        if (product) Object.assign(product, productData);
+      } else {
+        products.push({ id: Date.now(), ...productData });
+      }
+    }
+
+    await loadProducts();
     save(); renderAdminList(); renderHome(); renderCatalogue();
-    document.getElementById('newName').value = ''; document.getElementById('newPrice').value = '';
-    toast(`Added: ${name}`);
+    cancelProductEdit();
+    toast(editingId ? `Updated: ${name}` : `Added: ${name}`);
   }
 
-  function handleContactSubmit() { toast("Message sent! We'll be in touch within 24 hours. ✦"); }
+  async function createOrder(total) {
+    if (!supabaseClient || !user) return true;
+    const {data,error}=await supabaseClient
+
+  .from("orders")
+
+  .insert({
+
+    user_id:user.id,
+
+    total
+
+  })
+
+.select()
+
+.single();
+
+  if (error || !data) {
+    toast(error ? error.message : 'Unable to create the order');
+    return false;
+  }
+
+  for(const item of cart){
+
+    const { error: itemError } = await supabaseClient
+
+    .from("order_items")
+  
+    .insert({
+
+      order_id:data.id,
+
+      product_id:item.id,
+
+      quantity:item.qty
+
+    });
+    if (itemError) {
+      toast(itemError.message);
+      return false;
+    }
+
+  }
+
+  return true;
+  }
+
+  async function handleContactSubmit(){
+
+    const firstname=document.getElementById("firstName").value;
+
+    const lastname=document.getElementById("lastName").value;
+
+    const email=document.getElementById("email").value; 
+
+    const subject=document.getElementById("subject").value;
+
+    const message=document.getElementById("message").value;
+
+    if (!supabaseClient) { toast("Message received!"); return; }
+
+    const {error}=await supabaseClient
+      .from("contact_messages")
+      .insert({
+        firstname,
+
+        lastname,
+
+        email,
+        
+        subject,
+        
+        message
+      });
+
+      if(error){
+        toast(error.message);
+        return;
+      }
+
+    toast("Message sent!");
+  }
+
+  async function checkUser(){
+
+    if (!supabaseClient) return;
+
+    const {data}=await supabaseClient.auth.getUser();
+
+    if(!data.user){
+
+    return;
+
+  }
+
+  let { data: profileRow } = await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("id", data.user.id)
+    .maybeSingle();
+
+  // Fallback: if no profiles row exists yet (e.g. the database trigger
+  // from the setup guide hasn't been created), make one on the fly so
+  // Google sign-ins still work.
+  if (!profileRow) {
+    const fallbackUsername = data.user.user_metadata?.full_name || data.user.email.split('@')[0];
+    const { data: created } = await supabaseClient
+      .from("profiles")
+      .insert({ id: data.user.id, username: fallbackUsername, role: 'customer' })
+      .select()
+      .single();
+    profileRow = created;
+  }
+
+  user = profileRow;
+  save();
+  updateAuthUI();
+
+}
+
+  checkUser();
+
+  if (supabaseClient) {
+    supabaseClient.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_IN') { checkUser(); closeLoginModal(); }
+      if (event === 'SIGNED_OUT') { user = null; save(); updateAuthUI(); }
+    });
+  }
 
   function handleModalBackdrop(e, id) { if (e.target === document.getElementById(id)) document.getElementById(id).classList.remove('open'); }
 
@@ -691,7 +1007,6 @@
     el.textContent = msg; el.classList.add('show');
     setTimeout(() => el.classList.remove('show'), 2800);
   }
-
   buildMarquee(); renderHome(); renderCatalogue(); updateAuthUI(); updateCartBadge();
 </script>
 </body>
