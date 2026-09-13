@@ -1,0 +1,53 @@
+
+{
+"routes": [
+  {
+    "src": "/static/(.*)",           
+    "dest": "/static/$1"
+  },
+  {
+    "src": "/assets/(.*)",           
+    "dest": "/assets/$1"
+  },
+  {
+    "src": "/(.*\\.js)",
+    "dest": "/$1"
+  },
+  {
+    "src": "/(.*\\.css)",
+    "dest": "/$1"
+  },
+  {
+    "src": "/(.*\\.ico)",
+    "dest": "/$1"
+  },
+  {
+    "src": "/(.*\\.png)",
+    "dest": "/$1"
+  },
+  {
+    "src": "/editor/(?<roomId>[^/]+)",
+    "dest": "/SBNTS.html"
+  },
+  {
+    "src": "/login",
+    "dest": "/SBNTS.html"
+  },
+  {
+    "src": "/register",
+    "dest": "/SBNTS.html"
+  },
+  {
+    "src": "/createRoom",
+    "dest": "/SBNTS.html"
+  },
+  {
+    "src": "/",
+    "dest": "/SBNTS.html"
+  },
+  {
+    "src": "/.*",
+    "dest": "/SBNTS.html"
+  }
+]
+}
