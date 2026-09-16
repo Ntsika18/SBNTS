@@ -43,7 +43,7 @@
   },
   {
     "src": "/",
-    "dest": "/SBNTS.html"
+    "dest": "/index.html"
   },
   {
     "src": "/.*",
