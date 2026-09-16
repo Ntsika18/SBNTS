@@ -477,29 +477,66 @@
 <!-- LOGIN MODAL -->
 <div id="loginModal" class="modal-overlay" onclick="handleModalBackdrop(event,'loginModal')">
   <div class="modal-card">
-    <h2>Welcome Back</h2>
-    <p class="sub">Sign in to your AmberWear account</p>
-    <button type="button" class="btn-google" onclick="googleLogin()">
-      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
-        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
-        <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
-        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 6.293C4.672 4.166 6.656 2.58 9 3.58z"/>
-      </svg>
-      Continue with Google
-    </button>
-    <div class="login-divider"><span>or sign in with email</span></div>
-    <div class="role-toggle">
-      <label><input type="radio" name="role" value="customer" checked>Customer</label>
-      <label><input type="radio" name="role" value="admin">Admin</label>
+
+    <!-- ===== Credentials step (sign in / create account) ===== -->
+    <div id="authCredStep">
+      <h2 id="authTitle">Welcome Back</h2>
+      <p class="sub" id="authSub">Sign in to your AmberWear account</p>
+      <button type="button" class="btn-google" onclick="googleLogin()">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+          <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+          <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+          <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
+          <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 6.293C4.672 4.166 6.656 2.58 9 3.58z"/>
+        </svg>
+        Continue with Google
+      </button>
+      <div class="login-divider"><span id="authDivider">or sign in with email</span></div>
+      <div class="role-toggle" id="roleToggle">
+        <label><input type="radio" name="role" value="customer" checked>Customer</label>
+        <label><input type="radio" name="role" value="admin">Admin</label>
+      </div>
+      <input class="modal-input" type="email" id="loginUser" placeholder="Email address" autocomplete="email">
+      <input class="modal-input" type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+
+      <!-- Register-only fields -->
+      <div id="registerExtra" style="display:none;">
+        <input class="modal-input" type="password" id="loginPass2" placeholder="Confirm password" autocomplete="new-password">
+        <div id="pwMeter" style="height:6px;border-radius:6px;background:var(--cream-mid);overflow:hidden;margin:0.2rem 0 0.4rem;">
+          <div id="pwMeterBar" style="height:100%;width:0;transition:width .2s,background .2s;"></div>
+        </div>
+        <p id="pwHint" style="font-size:0.72rem;color:var(--warm-gray);margin:0 0 0.4rem;">Use 10+ characters with upper &amp; lower case, a number and a symbol.</p>
+      </div>
+
+      <p class="login-error" id="loginErr"></p>
+
+      <div class="modal-actions">
+        <button class="btn-large" id="authPrimaryBtn" style="width:100%;" onclick="submitAuth()">Sign In</button>
+        <button class="btn-cancel" onclick="closeLoginModal()">Cancel</button>
+      </div>
+
+      <p style="font-size:0.78rem;color:var(--warm-gray);text-align:center;margin-top:1rem;">
+        <a href="#" id="forgotLink" onclick="requestPasswordReset();return false;" style="color:var(--burnt-dark);">Forgot password?</a>
+        &nbsp;·&nbsp;
+        <a href="#" id="toggleAuthMode" onclick="toggleAuthMode();return false;" style="color:var(--burnt-dark);">Create an account</a>
+      </p>
     </div>
-    <input class="modal-input" type="text" id="loginUser" placeholder="Username">
-    <input class="modal-input" type="password" id="loginPass" placeholder="Password">
-    <p class="login-error" id="loginErr"></p>
-    <div class="modal-actions">
-      <button class="btn-large" style="width:100%;" onclick="doLogin()">Sign In</button>
-      <button class="btn-cancel" onclick="closeLoginModal()">Cancel</button>
+
+    <!-- ===== Admin OTP step (second factor) ===== -->
+    <div id="authOtpStep" style="display:none;">
+      <h2>Verify it's you</h2>
+      <p class="sub">Enter the 6-digit code we emailed to <strong id="otpEmailLabel"></strong> to finish signing in as an admin.</p>
+      <input class="modal-input" type="text" id="otpCode" placeholder="6-digit code" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+      <p class="login-error" id="otpErr"></p>
+      <div class="modal-actions">
+        <button class="btn-large" style="width:100%;" onclick="verifyAdminOtp()">Verify &amp; Sign In</button>
+        <button class="btn-cancel" onclick="cancelOtp()">Back</button>
+      </div>
+      <p style="font-size:0.78rem;color:var(--warm-gray);text-align:center;margin-top:1rem;">
+        <a href="#" onclick="resendAdminOtp();return false;" style="color:var(--burnt-dark);">Resend code</a>
+      </p>
     </div>
+
   </div>
 </div>
 
@@ -540,12 +577,25 @@
 
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1seWFmcXZqeHZoZHh0aWd1YWtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3NDM3OTksImV4cCI6MjEwMDMxOTc5OX0.zuVUy4GAMIdfriF0zStgdPfbmP4p-ywengPupzQgYso"; // paste your Supabase "anon public" API key here
 
-  const hasSupabaseConfig = supabaseUrl !== "https://mlyafqvjxvhdxtiguakg.supabase.co" && supabaseKey !== "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1seWFmcXZqeHZoZHh0aWd1YWtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3NDM3OTksImV4cCI6MjEwMDMxOTc5OX0.zuVUy4GAMIdfriF0zStgdPfbmP4p-ywengPupzQgYso";
+  // A valid Supabase config just needs a real URL + anon key present.
+  // (The previous check compared each value to itself, so it was always
+  // false — which silently dropped the app into an insecure "offline"
+  // login mode that accepted ANY password. That mode has been removed.)
+  const hasSupabaseConfig = /^https:\/\/.+\.supabase\.co\/?$/.test(supabaseUrl) && typeof supabaseKey === "string" && supabaseKey.length > 40;
   const supabaseClient = hasSupabaseConfig && window.supabase
     ? window.supabase.createClient(supabaseUrl, supabaseKey)
     : null;
   let products = JSON.parse(localStorage.getItem('aw_products') || '[]');
-  let user = JSON.parse(localStorage.getItem('aw_user') || 'null');
+
+  // SECURITY: never trust identity/role from localStorage. `user` is
+  // populated ONLY from a verified Supabase session (see refreshUser()).
+  // We keep it purely in memory so a tampered localStorage value can't
+  // grant admin or impersonate anyone. Any legacy cached identity is purged.
+  let user = null;
+  try {
+    localStorage.removeItem('aw_user');
+    localStorage.removeItem('aw_role');
+  } catch (e) {}
 
   if (!products.length) {
     products = [
@@ -577,9 +627,10 @@
   loadProducts();
 
   function save() {
+    // Only non-sensitive UI state is persisted. Identity/role is NEVER
+    // written to localStorage — it lives only in the verified session.
     localStorage.setItem('aw_products', JSON.stringify(products));
     localStorage.setItem('aw_cart', JSON.stringify(cart));
-    localStorage.setItem('aw_user', JSON.stringify(user));
   }
 
   function navigate(page) {
@@ -697,88 +748,264 @@
       options: { redirectTo: window.location.href }
     });
     if (error) toast(error.message);
-    // Google redirects away from the page here; on return, checkUser() (called on load) signs the user in.
+    // Google redirects away from the page here; on return, refreshUser() (called on load) signs the user in.
   }
 
-  function openLoginModal() { document.getElementById('loginModal').classList.add('open'); }
-  function closeLoginModal() { document.getElementById('loginModal').classList.remove('open'); document.getElementById('loginErr').textContent = ''; }
+  // ---------------------------------------------------------------
+  //  Auth mode handling (sign in vs. create account) + OTP step
+  // ---------------------------------------------------------------
+  let authMode = 'login';           // 'login' | 'register'
+  let pendingAdminEmail = null;      // email awaiting OTP second factor
 
-  async function doLogin(){
-    const email = document.getElementById("loginUser").value.trim();
-    const password = document.getElementById("loginPass").value;
-    if (!email || !password) {
-      document.getElementById('loginErr').textContent = 'Enter your email and password.';
-      return;
-    }
-    if (!supabaseClient) {
-      user = { username: email.split('@')[0], role: 'customer' };
-      save(); updateAuthUI(); closeLoginModal(); toast('Signed in locally');
-      return;
-    }
-    const {data,error}=await supabaseClient.auth.signInWithPassword({ email, password });
-    if(error){ toast(error.message); return; }
-    const selectedRole = document.querySelector('input[name="role"]:checked').value;
-    const { data: profile } = await supabaseClient
-      .from('profiles')
-      .select('username, role')
-      .eq('id', data.user.id)
-      .maybeSingle();
-    if (selectedRole === 'admin' && (!profile || profile.role !== 'admin')) {
-      await supabaseClient.auth.signOut();
-      document.getElementById('loginErr').textContent = 'This account does not have admin access.';
-      return;
-    }
-    user = {
-      id: data.user.id,
-      username: profile?.username || data.user.email.split('@')[0],
-      role: profile?.role || 'customer'
+  function openLoginModal() { setAuthMode('login'); showAuthStep('cred'); document.getElementById('loginModal').classList.add('open'); }
+  function closeLoginModal() {
+    document.getElementById('loginModal').classList.remove('open');
+    document.getElementById('loginErr').textContent = '';
+    document.getElementById('otpErr').textContent = '';
+    pendingAdminEmail = null;
+    showAuthStep('cred');
+  }
+
+  function showAuthStep(step) {
+    document.getElementById('authCredStep').style.display = step === 'cred' ? 'block' : 'none';
+    document.getElementById('authOtpStep').style.display  = step === 'otp'  ? 'block' : 'none';
+  }
+
+  function setAuthMode(mode) {
+    authMode = mode;
+    const isReg = mode === 'register';
+    document.getElementById('authTitle').textContent   = isReg ? 'Create your account' : 'Welcome Back';
+    document.getElementById('authSub').textContent      = isReg ? 'Join AmberWear in a few seconds' : 'Sign in to your AmberWear account';
+    document.getElementById('authDivider').textContent  = isReg ? 'or sign up with email' : 'or sign in with email';
+    document.getElementById('authPrimaryBtn').textContent = isReg ? 'Create Account' : 'Sign In';
+    document.getElementById('registerExtra').style.display = isReg ? 'block' : 'none';
+    // The Admin toggle only makes sense when signing IN.
+    document.getElementById('roleToggle').style.display = isReg ? 'none' : 'flex';
+    document.getElementById('toggleAuthMode').textContent = isReg ? 'Have an account? Sign in' : 'Create an account';
+    document.getElementById('forgotLink').style.display = isReg ? 'none' : 'inline';
+    document.getElementById('loginErr').textContent = '';
+    document.getElementById('loginPass').setAttribute('autocomplete', isReg ? 'new-password' : 'current-password');
+  }
+
+  function toggleAuthMode() { setAuthMode(authMode === 'login' ? 'register' : 'login'); }
+
+  function submitAuth() { return authMode === 'register' ? register() : doLogin(); }
+
+  // ---------------------------------------------------------------
+  //  Password strength
+  // ---------------------------------------------------------------
+  function passwordStrength(pw) {
+    pw = pw || '';
+    let score = 0;
+    const checks = {
+      length:  pw.length >= 10,
+      upper:   /[A-Z]/.test(pw),
+      lower:   /[a-z]/.test(pw),
+      number:  /[0-9]/.test(pw),
+      symbol:  /[^A-Za-z0-9]/.test(pw)
     };
-    save(); updateAuthUI(); closeLoginModal(); toast("Logged in!");
+    Object.values(checks).forEach(ok => { if (ok) score++; });
+    if (pw.length >= 14) score = Math.min(5, score + 1);
+    return { score, checks, ok: checks.length && checks.upper && checks.lower && checks.number && checks.symbol };
+  }
 
-}
+  function updatePwMeter() {
+    const { score, ok } = passwordStrength(document.getElementById('loginPass').value);
+    const bar = document.getElementById('pwMeterBar');
+    const pct = Math.min(100, (score / 5) * 100);
+    const colors = ['#d64545', '#d64545', '#e0883a', '#e0b93a', '#7bb36a', '#4f9e4f'];
+    bar.style.width = pct + '%';
+    bar.style.background = colors[score] || colors[0];
+    const hint = document.getElementById('pwHint');
+    hint.style.color = ok ? '#4f9e4f' : 'var(--warm-gray)';
+    hint.textContent = ok ? 'Strong password ✓' : 'Use 10+ characters with upper & lower case, a number and a symbol.';
+  }
 
-async function register(){
+  // ---------------------------------------------------------------
+  //  Server-side rate limiting helper (Supabase RPC)
+  // ---------------------------------------------------------------
+  async function rateLimitCheck(identifier, action, max, windowSeconds) {
+    if (!supabaseClient) return { allowed: true };
+    try {
+      const { data, error } = await supabaseClient.rpc('check_and_record_attempt', {
+        p_identifier: identifier,
+        p_action: action,
+        p_max_attempts: max,
+        p_window_seconds: windowSeconds
+      });
+      if (error) return { allowed: true };   // fail-open on infra errors, Supabase Auth still rate-limits
+      return data || { allowed: true };
+    } catch (e) { return { allowed: true }; }
+  }
 
-const email=document.getElementById("loginUser").value;
+  function rateLimitMessage(res) {
+    const mins = res.retry_after_seconds ? Math.ceil(res.retry_after_seconds / 60) : null;
+    return mins
+      ? `Too many attempts. Try again in about ${mins} minute${mins !== 1 ? 's' : ''}.`
+      : 'Too many attempts. Please try again later.';
+  }
 
-const password=document.getElementById("loginPass").value;
+  // ---------------------------------------------------------------
+  //  Sign in
+  // ---------------------------------------------------------------
+  async function doLogin(){
+    const email = document.getElementById("loginUser").value.trim().toLowerCase();
+    const password = document.getElementById("loginPass").value;
+    const errEl = document.getElementById('loginErr');
+    errEl.textContent = '';
+    if (!email || !password) { errEl.textContent = 'Enter your email and password.'; return; }
+    if (!supabaseClient) { errEl.textContent = 'Sign-in is unavailable — the store is not connected to its account service.'; return; }
 
-const username=email.split("@")[0];
+    // Server-side rate limit: 5 attempts / 15 min per email.
+    const rl = await rateLimitCheck(email, 'login', 5, 900);
+    if (!rl.allowed) { errEl.textContent = rateLimitMessage(rl); return; }
 
-const {data,error}=await supabaseClient.auth.signUp({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) { errEl.textContent = 'Incorrect email or password.'; return; }
 
-email,
+    // Server is the source of truth for role — read it fresh, never cache it.
+    const isAdmin = await fetchIsAdmin();
+    const selectedRole = document.querySelector('input[name="role"]:checked').value;
 
-password
+    if (selectedRole === 'admin') {
+      if (!isAdmin) {
+        await supabaseClient.auth.signOut();
+        errEl.textContent = 'This account does not have admin access.';
+        return;
+      }
+      // Second factor: the password has been verified, but we immediately
+      // sign the session OUT so that NO admin-capable session survives
+      // unless the emailed OTP is also completed. The real session is only
+      // (re)established by verifyOtp(). Closing the tab now leaves nothing.
+      await supabaseClient.auth.signOut();
+      user = null; updateAuthUI();
+      await beginAdminOtp(email);
+      return;
+    }
 
-});
+    // Non-admin: successful login clears the rate-limit counter.
+    await supabaseClient.rpc('clear_rate_limit', { p_identifier: email, p_action: 'login' }).catch(()=>{});
+    await refreshUser();
+    closeLoginModal();
+    toast('Logged in!');
+  }
 
-if(error){
+  // ---------------------------------------------------------------
+  //  Admin OTP (email one-time code) — second factor
+  // ---------------------------------------------------------------
+  async function beginAdminOtp(email) {
+    // Send a one-time email code to the (already password-verified) admin.
+    pendingAdminEmail = email;
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: false }
+    });
+    if (error) { document.getElementById('loginErr').textContent = error.message; return; }
+    document.getElementById('otpEmailLabel').textContent = email;
+    document.getElementById('otpCode').value = '';
+    document.getElementById('otpErr').textContent = '';
+    showAuthStep('otp');
+  }
 
-toast(error.message);
+  async function resendAdminOtp() {
+    if (!pendingAdminEmail) return;
+    const rl = await rateLimitCheck(pendingAdminEmail, 'otp', 5, 900);
+    if (!rl.allowed) { document.getElementById('otpErr').textContent = rateLimitMessage(rl); return; }
+    await beginAdminOtp(pendingAdminEmail);
+    toast('New code sent.');
+  }
 
-return;
+  async function verifyAdminOtp() {
+    const code = document.getElementById('otpCode').value.trim();
+    const errEl = document.getElementById('otpErr');
+    errEl.textContent = '';
+    if (!/^\d{6}$/.test(code)) { errEl.textContent = 'Enter the 6-digit code.'; return; }
+    if (!pendingAdminEmail) { errEl.textContent = 'Session expired — start again.'; showAuthStep('cred'); return; }
 
-}
+    const rl = await rateLimitCheck(pendingAdminEmail, 'otp_verify', 6, 900);
+    if (!rl.allowed) { errEl.textContent = rateLimitMessage(rl); return; }
 
-await supabaseClient.from("profiles").insert({
+    const { error } = await supabaseClient.auth.verifyOtp({
+      email: pendingAdminEmail,
+      token: code,
+      type: 'email'
+    });
+    if (error) { errEl.textContent = 'Invalid or expired code.'; return; }
 
-id:data.user.id,
+    // Re-confirm admin against the server after the OTP session is established.
+    if (!(await fetchIsAdmin())) {
+      await supabaseClient.auth.signOut();
+      errEl.textContent = 'This account does not have admin access.';
+      return;
+    }
+    await supabaseClient.rpc('clear_rate_limit', { p_identifier: pendingAdminEmail, p_action: 'login' }).catch(()=>{});
+    pendingAdminEmail = null;
+    await refreshUser();
+    closeLoginModal();
+    toast('Admin verified — welcome back!');
+  }
 
-username,
+  function cancelOtp() {
+    pendingAdminEmail = null;
+    if (supabaseClient) supabaseClient.auth.signOut().catch(()=>{});
+    showAuthStep('cred');
+  }
 
-role:"customer"
+  // ---------------------------------------------------------------
+  //  Create account (with password-strength enforcement)
+  // ---------------------------------------------------------------
+  async function register(){
+    const email = document.getElementById("loginUser").value.trim().toLowerCase();
+    const password = document.getElementById("loginPass").value;
+    const confirm = document.getElementById("loginPass2").value;
+    const errEl = document.getElementById('loginErr');
+    errEl.textContent = '';
 
-});
+    if (!supabaseClient) { errEl.textContent = 'Sign-up is unavailable — the store is not connected to its account service.'; return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { errEl.textContent = 'Enter a valid email address.'; return; }
 
-toast("Account created!");
+    const strength = passwordStrength(password);
+    if (!strength.ok) { errEl.textContent = 'Password too weak: use 10+ chars with upper & lower case, a number and a symbol.'; return; }
+    if (password !== confirm) { errEl.textContent = 'Passwords do not match.'; return; }
 
-}
+    const rl = await rateLimitCheck(email, 'register', 5, 3600);
+    if (!rl.allowed) { errEl.textContent = rateLimitMessage(rl); return; }
+
+    // Do NOT pass any role here — role is always 'customer' server-side
+    // (enforced by the handle_new_user trigger). No client-side profile
+    // insert either; the trigger creates the row.
+    const { error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: email.split('@')[0] } }
+    });
+    if (error) { errEl.textContent = error.message; return; }
+    toast('Account created! Check your email to confirm, then sign in.');
+    setAuthMode('login');
+  }
+
+  // ---------------------------------------------------------------
+  //  Password reset (rate limited)
+  // ---------------------------------------------------------------
+  async function requestPasswordReset() {
+    const email = document.getElementById("loginUser").value.trim().toLowerCase();
+    const errEl = document.getElementById('loginErr');
+    errEl.textContent = '';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { errEl.textContent = 'Enter your email above first, then tap “Forgot password?”.'; return; }
+    if (!supabaseClient) { errEl.textContent = 'Password reset is unavailable right now.'; return; }
+
+    // Server-side rate limit: 3 reset emails / hour per address.
+    const rl = await rateLimitCheck(email, 'reset', 3, 3600);
+    if (!rl.allowed) { errEl.textContent = rateLimitMessage(rl); return; }
+
+    await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
+    // Neutral message to avoid leaking which emails are registered.
+    toast('If that email is registered, a reset link is on its way.');
+  }
 
   async function logout(){
     if (supabaseClient) await supabaseClient.auth.signOut();
     user = null;
-    save();
     updateAuthUI();
   }
 
@@ -786,7 +1013,9 @@ toast("Account created!");
     const area = document.getElementById('authArea');
     const adminBtn = document.getElementById('adminNavBtn');
     if (user) {
-      area.innerHTML = `<div class="user-chip"><div class="user-chip-avatar">${user.username.slice(0,2).toUpperCase()}</div><span>${user.username}</span><button onclick="logout()">Sign out</button></div>`;
+      area.innerHTML = `<div class="user-chip"><div class="user-chip-avatar">${esc(user.username.slice(0,2).toUpperCase())}</div><span>${esc(user.username)}</span><button onclick="logout()">Sign out</button></div>`;
+      // The button visibility is only cosmetic; every admin action is
+      // re-checked against the server. It reflects the last verified role.
       adminBtn.style.display = user.role === 'admin' ? 'inline-flex' : 'none';
     } else {
       area.innerHTML = `<button class="btn-pill" onclick="openLoginModal()">Sign In</button>`;
@@ -794,8 +1023,19 @@ toast("Account created!");
     }
   }
 
-  function openAdminModal() {
-    if (!user || user.role !== 'admin') { toast('Admin access only'); return; }
+  // Authoritative admin check — asks the database (RLS-protected RPC).
+  async function fetchIsAdmin() {
+    if (!supabaseClient) return false;
+    try {
+      const { data, error } = await supabaseClient.rpc('is_admin');
+      return !error && data === true;
+    } catch (e) { return false; }
+  }
+
+  async function openAdminModal() {
+    // Never trust the cached role — verify with the server every time.
+    const ok = await fetchIsAdmin();
+    if (!ok) { toast('Admin access only'); return; }
     renderAdminList(); document.getElementById('adminModal').classList.add('open');
   }
   function closeAdminModal() { document.getElementById('adminModal').classList.remove('open'); }
@@ -954,49 +1194,53 @@ toast("Account created!");
     toast("Message sent!");
   }
 
-  async function checkUser(){
-
+  // Rebuilds the in-memory `user` from the VERIFIED Supabase session only.
+  // Nothing here reads from localStorage, so a tampered browser store can
+  // never fabricate an identity or an admin role.
+  async function refreshUser(){
     if (!supabaseClient) return;
 
-    const {data}=await supabaseClient.auth.getUser();
+    const { data } = await supabaseClient.auth.getUser();
+    if (!data.user) { user = null; updateAuthUI(); return; }
 
-    if(!data.user){
-
-    return;
-
-  }
-
-  let { data: profileRow } = await supabaseClient
-    .from("profiles")
-    .select("*")
-    .eq("id", data.user.id)
-    .maybeSingle();
-
-  // Fallback: if no profiles row exists yet (e.g. the database trigger
-  // from the setup guide hasn't been created), make one on the fly so
-  // Google sign-ins still work.
-  if (!profileRow) {
-    const fallbackUsername = data.user.user_metadata?.full_name || data.user.email.split('@')[0];
-    const { data: created } = await supabaseClient
+    let { data: profileRow } = await supabaseClient
       .from("profiles")
-      .insert({ id: data.user.id, username: fallbackUsername, role: 'customer' })
-      .select()
-      .single();
-    profileRow = created;
+      .select("*")
+      .eq("id", data.user.id)
+      .maybeSingle();
+
+    // Fallback: if no profiles row exists yet (e.g. the trigger from the
+    // setup guide hasn't been created), make one on the fly so Google
+    // sign-ins still work. Role is ALWAYS 'customer' here.
+    if (!profileRow) {
+      const fallbackUsername = data.user.user_metadata?.full_name || data.user.email.split('@')[0];
+      const { data: created } = await supabaseClient
+        .from("profiles")
+        .insert({ id: data.user.id, username: fallbackUsername, role: 'customer' })
+        .select()
+        .single();
+      profileRow = created;
+    }
+
+    user = {
+      id: data.user.id,
+      username: profileRow?.username || data.user.email.split('@')[0],
+      role: profileRow?.role === 'admin' ? 'admin' : 'customer'
+    };
+    updateAuthUI();
   }
 
-  user = profileRow;
-  save();
-  updateAuthUI();
-
-}
-
-  checkUser();
+  refreshUser();
 
   if (supabaseClient) {
     supabaseClient.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_IN') { checkUser(); closeLoginModal(); }
-      if (event === 'SIGNED_OUT') { user = null; save(); updateAuthUI(); }
+      // While an admin is mid-OTP, the password step has created a session
+      // but the second factor isn't done — don't grant the UI yet.
+      if (event === 'SIGNED_IN') {
+        if (pendingAdminEmail) return;
+        refreshUser();
+      }
+      if (event === 'SIGNED_OUT') { user = null; updateAuthUI(); }
     });
   }
 
@@ -1008,6 +1252,18 @@ toast("Account created!");
     setTimeout(() => el.classList.remove('show'), 2800);
   }
   buildMarquee(); renderHome(); renderCatalogue(); updateAuthUI(); updateCartBadge();
+
+  // Live password-strength meter while creating an account.
+  document.getElementById('loginPass').addEventListener('input', () => {
+    if (authMode === 'register') updatePwMeter();
+  });
+  // Submit auth form on Enter within the login inputs.
+  ['loginUser','loginPass','loginPass2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
+  });
+  const otpEl = document.getElementById('otpCode');
+  if (otpEl) otpEl.addEventListener('keydown', e => { if (e.key === 'Enter') verifyAdminOtp(); });
 </script>
 </body>
 </html>
